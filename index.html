@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>料金シミュレーション｜こころの森クリニック</title>
+<meta name="description" content="心療内科・精神科の診察費用をかんたんシミュレーション。初診・再診・診断書の料金目安がすぐわかります。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FFF9F0;
+    --warm-white: #FFFDFB;
+    --soft-green: #7DB89E;
+    --soft-green-light: #E8F4ED;
+    --soft-green-pale: #F2FAF6;
+    --soft-green-dark: #5A9A7D;
+    --warm-orange: #E8A87C;
+    --warm-orange-light: #FFF0E5;
+    --soft-blue: #89B5D1;
+    --soft-blue-light: #EAF3F9;
+    --soft-pink: #E8B4B8;
+    --soft-pink-light: #FFF2F3;
+    --text-main: #4A4A4A;
+    --text-light: #7A7A7A;
+    --text-dark: #3A3A3A;
+    --border-soft: #E8E2DA;
+    --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.06);
+    --radius: 16px;
+    --radius-sm: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--cream);
+    color: var(--text-main);
+    line-height: 1.8;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Soft organic background blobs */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -40%;
+    right: -25%;
+    width: 70vw;
+    height: 70vw;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(125,184,158,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -30%;
+    left: -15%;
+    width: 55vw;
+    height: 55vw;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(232,168,124,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* ===== CLINIC HEADER ===== */
+  .clinic-header {
+    background: var(--warm-white);
+    border-bottom: 1px solid var(--border-soft);
+    padding: 14px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+    background: rgba(255, 253, 251, 0.92);
+  }
+  .clinic-header-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .clinic-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  .clinic-logo .logo-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--soft-green), var(--soft-green-dark));
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    color: white;
+  }
+  .clinic-logo .logo-text {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+  .clinic-logo .logo-sub {
+    font-size: 10.5px;
+    color: var(--text-light);
+    font-weight: 400;
+    display: block;
+    margin-top: -2px;
+  }
+  .header-cta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .header-phone {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--soft-green-dark);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .header-phone .phone-icon {
+    font-size: 16px;
+  }
+  .header-reserve-btn {
+    padding: 8px 20px;
+    background: var(--soft-green);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+  .header-reserve-btn:hover {
+    background: var(--soft-green-dark);
+    transform: translateY(-1px);
+  }
+
+  /* ===== MAIN CONTAINER ===== */
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px 160px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== PAGE HEADER ===== */
+  .page-header {
+    text-align: center;
+    margin-bottom: 48px;
+    animation: fadeUp 0.8s ease-out;
+  }
+  .page-header .leaf {
+    display: inline-block;
+    font-size: 32px;
+    margin-bottom: 12px;
+    animation: gentle-float 3s ease-in-out infinite;
+  }
+  .page-header h1 {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: 0.04em;
+    margin-bottom: 14px;
+  }
+  .page-header .subtitle {
+    font-size: 14px;
+    color: var(--text-light);
+    max-width: 480px;
+    margin: 0 auto;
+    line-height: 2;
+  }
+
+  /* Trust badges */
+  .trust-badges {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+    animation: fadeUp 0.8s ease-out 0.15s both;
+  }
+  .trust-badge {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--text-light);
+    background: var(--warm-white);
+    padding: 6px 14px;
+    border-radius: 50px;
+    border: 1px solid var(--border-soft);
+  }
+  .trust-badge .badge-icon {
+    font-size: 14px;
+  }
+
+  /* ===== STEPS INDICATOR ===== */
+  .steps {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 40px;
+    animation: fadeUp 0.8s ease-out 0.2s both;
+  }
+  .step-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--border-soft);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .step-dot.active {
+    background: var(--soft-green);
+    width: 32px;
+    border-radius: 5px;
+  }
+  .step-dot.completed {
+    background: var(--soft-green);
+  }
+
+  /* ===== CARDS ===== */
+  .card {
+    background: var(--warm-white);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow-card);
+    border: 1px solid rgba(232, 226, 218, 0.5);
+    animation: fadeUp 0.6s ease-out both;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.08);
+  }
+  .card-label {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--soft-green);
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card h2 {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 20px;
+  }
+
+  /* ===== OPTION BUTTONS ===== */
+  .option-grid { display: grid; gap: 12px; }
+  .option-btn {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 20px;
+    border: 2px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    background: var(--warm-white);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-align: left;
+    font-family: 'Noto Sans JP', sans-serif;
+    position: relative;
+    overflow: hidden;
+  }
+  .option-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--soft-green-light);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .option-btn:hover {
+    border-color: var(--soft-green);
+    transform: translateX(4px);
+  }
+  .option-btn:hover::before { opacity: 0.5; }
+  .option-btn.selected {
+    border-color: var(--soft-green);
+    background: var(--soft-green-light);
+    box-shadow: 0 0 0 1px var(--soft-green);
+  }
+  .option-btn .option-icon {
+    font-size: 28px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .option-btn .option-text { position: relative; z-index: 1; }
+  .option-btn .option-title {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--text-dark);
+    margin-bottom: 2px;
+  }
+  .option-btn .option-desc {
+    font-size: 12.5px;
+    color: var(--text-light);
+    line-height: 1.6;
+  }
+  .option-btn .check-mark {
+    margin-left: auto;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid var(--border-soft);
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+  }
+  .option-btn.selected .check-mark {
+    background: var(--soft-green);
+    border-color: var(--soft-green);
+  }
+  .option-btn.selected .check-mark::after {
+    content: '✓';
+    color: white;
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  /* ===== TOGGLE OPTIONS ===== */
+  .toggle-group { display: flex; flex-direction: column; gap: 10px; }
+  .toggle-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border: 1.5px solid var(--border-soft);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: var(--warm-white);
+  }
+  .toggle-item:hover { border-color: var(--warm-orange); }
+  .toggle-item.active {
+    border-color: var(--warm-orange);
+    background: var(--warm-orange-light);
+  }
+  .toggle-item .toggle-label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dark);
+  }
+  .toggle-item .toggle-note {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 2px;
+  }
+  .toggle-switch {
+    width: 44px;
+    height: 24px;
+    border-radius: 12px;
+    background: var(--border-soft);
+    position: relative;
+    transition: background 0.3s ease;
+    flex-shrink: 0;
+  }
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: white;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .toggle-item.active .toggle-switch { background: var(--warm-orange); }
+  .toggle-item.active .toggle-switch::after { transform: translateX(20px); }
+
+  /* ===== INSURANCE SELECTOR ===== */
+  .insurance-selector {
+    display: flex;
+    gap: 8px;
+    background: #F5F0EB;
+    border-radius: var(--radius-sm);
+    padding: 4px;
+  }
+  .insurance-btn {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-light);
+    transition: all 0.3s ease;
+  }
+  .insurance-btn.active {
+    background: var(--warm-white);
+    color: var(--text-dark);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+  .insurance-note {
+    font-size: 12px;
+    color: var(--text-light);
+    margin-top: 12px;
+    text-align: center;
+  }
+
+  /* ===== RESULT SECTION ===== */
+  .result-section {
+    display: none;
+    animation: fadeUp 0.6s ease-out both;
+  }
+  .result-section.visible { display: block; }
+
+  .result-card {
+    background: linear-gradient(135deg, #FFFDFB 0%, #F5FAF7 100%);
+    border: 2px solid var(--soft-green);
+    border-radius: var(--radius);
+    padding: 36px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .result-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--soft-green), var(--warm-orange), var(--soft-blue));
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+  .result-title {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 15px;
+    color: var(--soft-green-dark);
+    font-weight: 500;
+    margin-bottom: 8px;
+  }
+  .result-total {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--text-dark);
+    margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+  .result-total .yen { font-size: 20px; font-weight: 500; color: var(--text-light); margin-left: 2px; }
+  .result-total .approx { font-size: 16px; font-weight: 400; color: var(--text-light); margin-right: 4px; }
+  .result-subtitle {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-bottom: 24px;
+  }
+
+  /* Breakdown */
+  .breakdown { text-align: left; margin-top: 20px; }
+  .breakdown-header {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-light);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--border-soft);
+  }
+  .breakdown-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(232,226,218,0.4);
+    animation: slideIn 0.4s ease-out both;
+  }
+  .breakdown-row:last-child { border-bottom: none; }
+  .breakdown-row .label {
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .breakdown-row .label .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--soft-green);
+    flex-shrink: 0;
+  }
+  .breakdown-row .amount {
+    font-weight: 600;
+    color: var(--text-dark);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ===== CTA IN RESULT ===== */
+  .result-cta {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px dashed var(--border-soft);
+  }
+  .result-cta-text {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 6px;
+  }
+  .result-cta-sub {
+    font-size: 12.5px;
+    color: var(--text-light);
+    margin-bottom: 18px;
+    line-height: 1.8;
+  }
+  .result-cta-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .cta-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 32px;
+    background: var(--soft-green);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 16px rgba(125, 184, 158, 0.3);
+    text-decoration: none;
+  }
+  .cta-primary:hover {
+    background: var(--soft-green-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(125, 184, 158, 0.4);
+  }
+  .cta-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 28px;
+    background: var(--warm-white);
+    color: var(--soft-green-dark);
+    border: 2px solid var(--soft-green);
+    border-radius: 50px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+  }
+  .cta-secondary:hover {
+    background: var(--soft-green-light);
+    transform: translateY(-1px);
+  }
+
+  /* ===== NOTES ===== */
+  .note-box {
+    background: var(--soft-blue-light);
+    border-radius: var(--radius-sm);
+    padding: 20px 24px;
+    margin-top: 24px;
+    border-left: 3px solid var(--soft-blue);
+  }
+  .note-box h3 {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--soft-blue);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .note-box p {
+    font-size: 13px;
+    color: var(--text-main);
+    line-height: 1.9;
+  }
+
+  /* Reset */
+  .reset-wrapper { text-align: center; margin-top: 20px; }
+  .reset-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 10px 24px;
+    background: transparent;
+    color: var(--text-light);
+    border: 1.5px solid var(--border-soft);
+    border-radius: 50px;
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .reset-btn:hover {
+    border-color: var(--text-light);
+    color: var(--text-main);
+  }
+
+  /* ===== FLOATING CTA BAR ===== */
+  .floating-cta {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background: rgba(255, 253, 251, 0.95);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border-soft);
+    padding: 12px 20px;
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .floating-cta.visible { transform: translateY(0); }
+  .floating-cta-inner {
+    max-width: 800px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .floating-cta-info {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .floating-cta-label {
+    font-size: 12px;
+    color: var(--text-light);
+    font-weight: 500;
+  }
+  .floating-cta-amount {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-dark);
+  }
+  .floating-cta-amount .small {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-light);
+  }
+  .floating-cta-buttons {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+  .floating-reserve-btn {
+    padding: 10px 24px;
+    background: var(--soft-green);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 12px rgba(125, 184, 158, 0.3);
+  }
+  .floating-reserve-btn:hover {
+    background: var(--soft-green-dark);
+  }
+  .floating-tel-btn {
+    padding: 10px 20px;
+    background: transparent;
+    color: var(--soft-green-dark);
+    border: 1.5px solid var(--soft-green);
+    border-radius: 50px;
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .floating-tel-btn:hover {
+    background: var(--soft-green-light);
+  }
+
+  /* ===== DEMO BANNER ===== */
+  .demo-banner {
+    background: linear-gradient(135deg, #2D3436, #636E72);
+    color: white;
+    text-align: center;
+    padding: 10px 20px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    position: relative;
+    z-index: 300;
+  }
+  .demo-banner a {
+    color: #81ECEC;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  /* Hidden */
+  .hidden { display: none; }
+  .fade-in { animation: fadeUp 0.5s ease-out both; }
+
+  /* Animations */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes gentle-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  @keyframes pop {
+    0% { transform: scale(0.95); opacity: 0; }
+    50% { transform: scale(1.02); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .pop-in { animation: pop 0.5s cubic-bezier(0.4, 0, 0.2, 1) both; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .container { padding: 28px 16px 180px; }
+    .card { padding: 24px 20px; }
+    .page-header h1 { font-size: 22px; }
+    .result-total { font-size: 38px; }
+    .result-card { padding: 28px 20px; }
+    .insurance-selector { flex-direction: column; }
+    .header-phone { display: none; }
+    .result-cta-buttons { flex-direction: column; align-items: center; }
+    .floating-cta-inner { flex-direction: column; gap: 8px; text-align: center; }
+    .floating-cta-buttons { width: 100%; }
+    .floating-reserve-btn { flex: 1; }
+    .floating-tel-btn { flex: 1; }
+    .trust-badges { gap: 10px; }
+    .trust-badge { font-size: 11px; padding: 5px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Demo banner -->
+<div class="demo-banner">
+  📌 これはデモページです — 貴院に合わせた内容でカスタマイズ可能です
+</div>
+
+<!-- Clinic Header -->
+<header class="clinic-header">
+  <div class="clinic-header-inner">
+    <a href="#" class="clinic-logo">
+      <div class="logo-icon">🌿</div>
+      <div>
+        <div class="logo-text">こころの森クリニック</div>
+        <div class="logo-sub">心療内科・精神科</div>
+      </div>
+    </a>
+    <div class="header-cta">
+      <a href="tel:0312345678" class="header-phone">
+        <span class="phone-icon">📞</span> 03-1234-5678
+      </a>
+      <a href="#" class="header-reserve-btn">WEB予約</a>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="leaf">🍃</div>
+    <h1>料金シミュレーション</h1>
+    <p class="subtitle">
+      初めての受診で不安な方へ。<br>
+      かんたん3ステップで、費用の目安をご確認いただけます。
+    </p>
+    <div class="trust-badges">
+      <div class="trust-badge"><span class="badge-icon">🏥</span> 各種保険適用</div>
+      <div class="trust-badge"><span class="badge-icon">💳</span> クレジットカード対応</div>
+      <div class="trust-badge"><span class="badge-icon">📋</span> 自立支援医療対応</div>
+    </div>
+  </div>
+
+  <!-- Steps -->
+  <div class="steps">
+    <div class="step-dot active" id="dot1"></div>
+    <div class="step-dot" id="dot2"></div>
+    <div class="step-dot" id="dot3"></div>
+    <div class="step-dot" id="dot4"></div>
+  </div>
+
+  <!-- Step 1 -->
+  <div class="card" id="step1" style="animation-delay: 0.15s">
+    <div class="card-label"><span class="icon">📋</span> STEP 1</div>
+    <h2>診察の種類を選んでください</h2>
+    <div class="option-grid">
+      <button class="option-btn" data-value="first" onclick="selectVisitType(this)">
+        <span class="option-icon">🏥</span>
+        <span class="option-text">
+          <span class="option-title">初診（はじめての受診）</span>
+          <span class="option-desc">初めてのご来院・転院の方</span>
+        </span>
+        <span class="check-mark"></span>
+      </button>
+      <button class="option-btn" data-value="return" onclick="selectVisitType(this)">
+        <span class="option-icon">🔄</span>
+        <span class="option-text">
+          <span class="option-title">再診（2回目以降）</span>
+          <span class="option-desc">通院中で定期的な診察の方</span>
+        </span>
+        <span class="check-mark"></span>
+      </button>
+      <button class="option-btn" data-value="certificate" onclick="selectVisitType(this)">
+        <span class="option-icon">📄</span>
+        <span class="option-text">
+          <span class="option-title">診断書の発行</span>
+          <span class="option-desc">休職・復職・各種申請など</span>
+        </span>
+        <span class="check-mark"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Step 2 -->
+  <div class="card hidden" id="step2">
+    <div class="card-label"><span class="icon">⚙️</span> STEP 2</div>
+    <h2>追加の項目を選んでください</h2>
+    <div class="toggle-group" id="options-container"></div>
+  </div>
+
+  <!-- Step 3 -->
+  <div class="card hidden" id="step3">
+    <div class="card-label"><span class="icon">💳</span> STEP 3</div>
+    <h2>保険の負担割合を選んでください</h2>
+    <div class="insurance-selector">
+      <button class="insurance-btn active" data-ratio="0.3" onclick="selectInsurance(this)">3割負担</button>
+      <button class="insurance-btn" data-ratio="0.1" onclick="selectInsurance(this)">1割負担</button>
+      <button class="insurance-btn" data-ratio="1.0" onclick="selectInsurance(this)">自費（10割）</button>
+    </div>
+    <p class="insurance-note">※ 一般的な社会保険・国民健康保険の方は「3割負担」です</p>
+  </div>
+
+  <!-- Result -->
+  <div class="result-section" id="resultSection">
+    <div class="result-card pop-in">
+      <div class="result-title">お会計の目安</div>
+      <div class="result-total">
+        <span class="approx">約</span><span id="totalAmount">0</span><span class="yen">円</span>
+      </div>
+      <div class="result-subtitle" id="resultSubtitle">3割負担の場合</div>
+
+      <div class="breakdown">
+        <div class="breakdown-header">💡 内訳</div>
+        <div id="breakdownList"></div>
+      </div>
+
+      <!-- CTA inside result -->
+      <div class="result-cta">
+        <div class="result-cta-text">ご予約・ご相談はお気軽にどうぞ</div>
+        <div class="result-cta-sub">
+          当日の診察内容によって金額が前後する場合があります。<br>
+          ご不安な点があれば、ご予約時にお気軽にお問い合わせください。
+        </div>
+        <div class="result-cta-buttons">
+          <a href="#" class="cta-primary">🍃 WEB予約はこちら</a>
+          <a href="tel:0312345678" class="cta-secondary">📞 電話で相談する</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-box">
+      <h3>💬 ご参考までに</h3>
+      <p id="noteText"></p>
+    </div>
+
+    <div class="reset-wrapper">
+      <button class="reset-btn" onclick="resetAll()">↩ 最初からやり直す</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Floating CTA Bar -->
+<div class="floating-cta" id="floatingCta">
+  <div class="floating-cta-inner">
+    <div class="floating-cta-info">
+      <span class="floating-cta-label">お会計の目安</span>
+      <span class="floating-cta-amount">
+        <span class="small">約 </span><span id="floatingAmount">0</span><span class="small"> 円</span>
+      </span>
+    </div>
+    <div class="floating-cta-buttons">
+      <button class="floating-reserve-btn" onclick="alert('※ ご予約ページへのリンクを設定できます')">WEB予約</button>
+      <a href="tel:0312345678" class="floating-tel-btn">📞 電話</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ===== STATE =====
+  let state = {
+    visitType: null,
+    options: {},
+    insuranceRatio: 0.3
+  };
+
+  // ===== FEE DATA (10割) =====
+  const feeData = {
+    first: {
+      base: { label: '初診料', amount: 2910 },
+      options: [
+        { id: 'counseling_long', label: '通院精神療法（30分以上）', amount: 4000, desc: '医師による30分以上のカウンセリング', default: true },
+        { id: 'counseling_short', label: '通院精神療法（30分未満）', amount: 3300, desc: '医師による短時間の診察', default: false },
+        { id: 'psychological_test', label: '心理検査', amount: 2800, desc: 'WAIS・ロールシャッハなど', default: false },
+        { id: 'blood_test', label: '血液検査', amount: 3500, desc: '服薬開始前の検査など', default: false },
+        { id: 'prescription', label: '院外処方せん料', amount: 680, desc: 'お薬の処方がある場合', default: true },
+      ]
+    },
+    return: {
+      base: { label: '再診料', amount: 750 },
+      options: [
+        { id: 'counseling_short', label: '通院精神療法（30分未満）', amount: 3300, desc: '通常の再診カウンセリング', default: true },
+        { id: 'counseling_long', label: '通院精神療法（30分以上）', amount: 4000, desc: 'じっくり相談したい場合', default: false },
+        { id: 'prescription', label: '院外処方せん料', amount: 680, desc: 'お薬の処方がある場合', default: true },
+        { id: 'blood_test', label: '血液検査', amount: 3500, desc: '定期的なモニタリング', default: false },
+      ]
+    },
+    certificate: {
+      base: { label: '診断書作成料', amount: 3300 },
+      options: [
+        { id: 'cert_employer', label: '一般診断書（会社提出用）', amount: 0, desc: '休職・復職などの証明', default: true },
+        { id: 'cert_insurance', label: '保険会社用診断書', amount: 2200, desc: '保険会社への提出用（追加料金）', default: false },
+        { id: 'cert_disability', label: '自立支援医療の意見書', amount: 0, desc: '自立支援の申請用', default: false },
+        { id: 'return_visit', label: '再診料（診察を含む場合）', amount: 750, desc: '診察も合わせて行う場合', default: true },
+        { id: 'counseling_short', label: '通院精神療法（30分未満）', amount: 3300, desc: '診察時のカウンセリング', default: false },
+      ]
+    }
+  };
+
+  // ===== FUNCTIONS =====
+  function selectVisitType(btn) {
+    document.querySelectorAll('#step1 .option-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    state.visitType = btn.dataset.value;
+    state.options = {};
+    buildOptions();
+    showStep(2);
+    updateStepDots(2);
+  }
+
+  function buildOptions() {
+    const container = document.getElementById('options-container');
+    const data = feeData[state.visitType];
+    container.innerHTML = '';
+
+    data.options.forEach((opt, i) => {
+      state.options[opt.id] = opt.default;
+      const item = document.createElement('div');
+      item.className = `toggle-item ${opt.default ? 'active' : ''}`;
+      item.innerHTML = `
+        <div>
+          <div class="toggle-label">${opt.label}</div>
+          <div class="toggle-note">${opt.desc}</div>
+        </div>
+        <div class="toggle-switch"></div>
+      `;
+      item.onclick = () => {
+        const isActive = item.classList.toggle('active');
+        state.options[opt.id] = isActive;
+        calculateAndShow();
+      };
+      container.appendChild(item);
+    });
+
+    setTimeout(() => {
+      showStep(3);
+      updateStepDots(3);
+      setTimeout(() => {
+        calculateAndShow();
+        updateStepDots(4);
+      }, 300);
+    }, 300);
+  }
+
+  function showStep(step) {
+    const el = document.getElementById(`step${step}`);
+    if (el) {
+      el.classList.remove('hidden');
+      el.classList.add('fade-in');
+      el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  function updateStepDots(activeStep) {
+    for (let i = 1; i <= 4; i++) {
+      const dot = document.getElementById(`dot${i}`);
+      dot.className = 'step-dot';
+      if (i === activeStep) dot.classList.add('active');
+      else if (i < activeStep) dot.classList.add('completed');
+    }
+  }
+
+  function selectInsurance(btn) {
+    document.querySelectorAll('.insurance-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.insuranceRatio = parseFloat(btn.dataset.ratio);
+    calculateAndShow();
+  }
+
+  function calculateAndShow() {
+    if (!state.visitType) return;
+
+    const data = feeData[state.visitType];
+    let totalTenWari = data.base.amount;
+    const breakdown = [{ label: data.base.label, amount: data.base.amount }];
+
+    data.options.forEach(opt => {
+      if (state.options[opt.id]) {
+        totalTenWari += opt.amount;
+        if (opt.amount > 0) {
+          breakdown.push({ label: opt.label, amount: opt.amount });
+        }
+      }
+    });
+
+    const isCertificate = state.visitType === 'certificate';
+    let selfPayItems = [];
+    let insuredItems = [];
+
+    if (isCertificate) {
+      breakdown.forEach(item => {
+        if (item.label.includes('診断書') || item.label.includes('意見書') || item.label.includes('保険会社')) {
+          selfPayItems.push(item);
+        } else {
+          insuredItems.push(item);
+        }
+      });
+    }
+
+    let finalTotal;
+    if (isCertificate && selfPayItems.length > 0) {
+      const selfPayTotal = selfPayItems.reduce((sum, i) => sum + i.amount, 0);
+      const insuredTotal = insuredItems.reduce((sum, i) => sum + i.amount, 0);
+      finalTotal = selfPayTotal + Math.round(insuredTotal * state.insuranceRatio / 10) * 10;
+    } else {
+      finalTotal = Math.round(totalTenWari * state.insuranceRatio / 10) * 10;
+    }
+
+    // Show result
+    const resultSection = document.getElementById('resultSection');
+    resultSection.classList.add('visible');
+
+    animateNumber(document.getElementById('totalAmount'), finalTotal);
+    document.getElementById('floatingAmount').textContent = finalTotal.toLocaleString();
+
+    // Show floating CTA
+    document.getElementById('floatingCta').classList.add('visible');
+
+    const ratioLabels = { 0.3: '3割負担', 0.1: '1割負担', 1.0: '自費（10割）' };
+    document.getElementById('resultSubtitle').textContent = `${ratioLabels[state.insuranceRatio]}の場合`;
+
+    // Breakdown
+    const breakdownList = document.getElementById('breakdownList');
+    breakdownList.innerHTML = '';
+    breakdown.forEach((item, i) => {
+      let displayAmount;
+      if (isCertificate && (item.label.includes('診断書') || item.label.includes('意見書') || item.label.includes('保険会社'))) {
+        displayAmount = item.amount;
+      } else {
+        displayAmount = Math.round(item.amount * state.insuranceRatio / 10) * 10;
+      }
+      const row = document.createElement('div');
+      row.className = 'breakdown-row';
+      row.style.animationDelay = `${i * 0.08}s`;
+      const selfPayBadge = (isCertificate && (item.label.includes('診断書') || item.label.includes('意見書') || item.label.includes('保険会社')))
+        ? ' <span style="font-size:11px;color:var(--warm-orange);font-weight:500;">(自費)</span>' : '';
+      row.innerHTML = `
+        <span class="label"><span class="dot"></span>${item.label}${selfPayBadge}</span>
+        <span class="amount">約 ${displayAmount.toLocaleString()}円</span>
+      `;
+      breakdownList.appendChild(row);
+    });
+
+    // Notes
+    let noteHTML = '上記の金額はあくまで目安です。診察の内容や処方内容によって実際の費用は前後する場合がございます。ご不明な点がございましたら、お気軽にお電話ください。';
+    if (state.visitType === 'first') {
+      noteHTML = '初めての受診では、問診票の記入にお時間をいただくため、<strong>予約時間の15分前</strong>にお越しください。保険証・お薬手帳をご持参ください。<br><br>' + noteHTML;
+    } else if (state.visitType === 'certificate') {
+      noteHTML = '診断書は<strong>即日発行できない場合</strong>もございます。お急ぎの場合は事前にお電話でご相談ください。<br><br>' + noteHTML;
+    }
+    if (state.insuranceRatio === 0.1) {
+      noteHTML += '<br><br>💡 <strong>自立支援医療</strong>をご利用の場合、1割負担が適用されます。まだお持ちでない方はお気軽にご相談ください。';
+    }
+    document.getElementById('noteText').innerHTML = noteHTML;
+
+    setTimeout(() => {
+      resultSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 200);
+  }
+
+  function animateNumber(el, target) {
+    const duration = 600;
+    const start = parseInt(el.textContent.replace(/,/g, '')) || 0;
+    const startTime = performance.now();
+    function update(currentTime) {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const current = Math.round(start + (target - start) * eased);
+      el.textContent = current.toLocaleString();
+      if (progress < 1) requestAnimationFrame(update);
+    }
+    requestAnimationFrame(update);
+  }
+
+  function resetAll() {
+    state = { visitType: null, options: {}, insuranceRatio: 0.3 };
+    document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    document.querySelectorAll('.insurance-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector('.insurance-btn[data-ratio="0.3"]').classList.add('active');
+    document.getElementById('step2').classList.add('hidden');
+    document.getElementById('step3').classList.add('hidden');
+    document.getElementById('resultSection').classList.remove('visible');
+    document.getElementById('floatingCta').classList.remove('visible');
+    updateStepDots(1);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>
